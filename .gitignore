@@ -1,0 +1,222 @@
+# VoidGuard AI Governance Suite - Git Ignore Configuration
+
+# =============================================================================
+# Environment and Configuration
+# =============================================================================
+.env
+.env.local
+.env.production
+.env.staging
+.env.test
+config/local.json
+config/production.json
+config/staging.json
+
+# =============================================================================
+# Dependencies
+# =============================================================================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+.pnp
+.pnp.js
+
+# =============================================================================
+# Runtime and Logs
+# =============================================================================
+logs/
+*.log
+pids/
+*.pid
+*.seed
+*.pid.lock
+lib-cov/
+coverage/
+.nyc_output/
+
+# =============================================================================
+# Database
+# =============================================================================
+*.db
+*.sqlite
+*.sqlite3
+data/local/
+dumps/
+migrations/temp/
+
+# =============================================================================
+# Caching and Temporary Files
+# =============================================================================
+.cache/
+.tmp/
+.temp/
+uploads/temp/
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# =============================================================================
+# Development Tools
+# =============================================================================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.eslintcache
+
+# =============================================================================
+# Testing
+# =============================================================================
+test-results/
+coverage/
+.nyc_output/
+junit.xml
+
+# =============================================================================
+# Build Output
+# =============================================================================
+dist/
+build/
+out/
+public/build/
+.next/
+
+# =============================================================================
+# Docker
+# =============================================================================
+.dockerignore
+docker-compose.override.yml
+
+# =============================================================================
+# Security and Sensitive Data
+# =============================================================================
+# API Keys and Secrets
+*.key
+*.pem
+*.crt
+*.csr
+client_secret_*.json
+service-account-*.json
+
+# OAuth and Authentication
+oauth-credentials.json
+jwt-keys/
+ssl-certificates/
+
+# Production configurations
+config/production/
+secrets/
+
+# =============================================================================
+# VoidGuard Specific
+# =============================================================================
+# Oracle Analysis Data
+data/oracle-sessions/
+data/analysis-cache/
+
+# VoidGuard Audit Logs (keep structure, ignore sensitive data)
+logs/audit-detailed/
+logs/security-incidents/
+
+# Custom Models and Training Data
+data/custom-models/
+data/training-sets/
+
+# Voice Processing Temporary Files
+uploads/voice/temp/
+audio-cache/
+
+# =============================================================================
+# Operating System Files
+# =============================================================================
+# Windows
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon?
+
+# Linux
+.directory
+.Trash-*
+
+# =============================================================================
+# Editor and IDE Files
+# =============================================================================
+# VSCode
+.vscode/settings.json
+.vscode/launch.json
+.vscode/extensions.json
+
+# JetBrains IDEs
+.idea/
+*.iml
+*.iws
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Vim
+*.swp
+*.swo
+
+# =============================================================================
+# Monitoring and Analytics
+# =============================================================================
+# Prometheus data
+prometheus-data/
+
+# Grafana data
+grafana-data/
+
+# Application metrics
+metrics/raw/
+
+# =============================================================================
+# Backup Files
+# =============================================================================
+*.backup
+*.bak
+*.orig
+
+# =============================================================================
+# Deployment
+# =============================================================================
+# Kubernetes secrets
+k8s/secrets/
+k8s/overlays/production/
+
+# Terraform state
+*.tfstate
+*.tfstate.backup
+.terraform/
+
+# =============================================================================
+# Documentation Build
+# =============================================================================
+docs/build/
+docs/_build/
+docs/node_modules/
+
+# =============================================================================
+# Custom Exclusions
+# =============================================================================
+# Add any project-specific exclusions below this line
+
+# Development scratch files
+scratch/
+TODO.md
+NOTES.md

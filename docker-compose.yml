@@ -1,0 +1,177 @@
+# VoidGuard AI Governance Suite - Development Environment
+# Docker Compose configuration for local development
+
+version: '3.8'
+
+services:
+  # =============================================================================
+  # Application Services
+  # =============================================================================
+  
+  # Main API Gateway & Application
+  voidguard-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+    container_name: voidguard-api
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - DB_HOST=postgres
+      - REDIS_HOST=redis
+      - PORT=3000
+    env_file:
+      - .env
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - ./logs:/app/logs
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - voidguard-network
+    restart: unless-stopped
+
+  # =============================================================================
+  # Database Services
+  # =============================================================================
+  
+  # PostgreSQL Primary Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: voidguard-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: voidguard_governance
+      POSTGRES_USER: voidguard_user
+      POSTGRES_PASSWORD: secure_dev_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./data/migrations:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U voidguard_user -d voidguard_governance"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - voidguard-network
+    restart: unless-stopped
+
+  # Redis Cache & Session Store
+  redis:
+    image: redis:7-alpine
+    container_name: voidguard-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
+    networks:
+      - voidguard-network
+    restart: unless-stopped
+
+  # =============================================================================
+  # Monitoring & Analytics (Optional for development)
+  # =============================================================================
+  
+  # Prometheus Metrics Collection
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: voidguard-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./config/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=200h'
+      - '--web.enable-lifecycle'
+    networks:
+      - voidguard-network
+    restart: unless-stopped
+    profiles:
+      - monitoring
+
+  # Grafana Dashboards
+  grafana:
+    image: grafana/grafana:latest
+    container_name: voidguard-grafana
+    ports:
+      - "3001:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - grafana_data:/var/lib/grafana
+    networks:
+      - voidguard-network
+    restart: unless-stopped
+    profiles:
+      - monitoring
+
+  # =============================================================================
+  # Development Tools
+  # =============================================================================
+  
+  # Database Administration (pgAdmin)
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: voidguard-pgadmin
+    ports:
+      - "5050:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@voidguard.ai
+      PGADMIN_DEFAULT_PASSWORD: admin
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    networks:
+      - voidguard-network
+    restart: unless-stopped
+    profiles:
+      - tools
+
+  # Redis Commander (Redis GUI)
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    container_name: voidguard-redis-commander
+    ports:
+      - "8081:8081"
+    environment:
+      - REDIS_HOSTS=local:redis:6379
+    networks:
+      - voidguard-network
+    restart: unless-stopped
+    profiles:
+      - tools
+
+# =============================================================================
+# Networks
+# =============================================================================
+networks:
+  voidguard-network:
+    driver: bridge
+
+# =============================================================================
+# Persistent Volumes
+# =============================================================================
+volumes:
+  postgres_data:
+  redis_data:
+  prometheus_data:
+  grafana_data:
+  pgadmin_data:

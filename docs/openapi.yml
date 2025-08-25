@@ -1,0 +1,856 @@
+openapi: 3.0.3
+info:
+  title: VoidGuard AI Governance Suite API
+  description: |
+    Complete Enterprise AI Safety & Governance Platform
+    
+    The VoidGuard AI Governance Suite provides comprehensive AI governance, safety monitoring, 
+    strategic intelligence analysis, and voice-enabled corporate assistance through a unified API.
+    
+    ## Suite Components
+    
+    1. **Oracle Strategic Intelligence** - AI consciousness analysis for strategic decision-making
+    2. **VoidGuard Enterprise Dashboard** - Centralized AI governance and compliance monitoring  
+    3. **Alo Corporate Suite** - Enterprise voice assistant for communication management
+    4. **Algorithm Transparency Engine** - AI system auditing and bias detection
+    
+    ## Authentication
+    
+    All API endpoints require authentication using Bearer tokens (JWT).
+    Enterprise SSO integration available for SAML and OAuth providers.
+    
+    ## Rate Limiting
+    
+    - Standard users: 100 requests per 15 minutes
+    - Enterprise users: 1000 requests per 15 minutes
+    - Admin users: Unlimited (with fair usage policy)
+    
+    ## VoidGuard Safety Framework
+    
+    All API responses include VoidGuard safety metadata ensuring:
+    - ✅ Human Control & Agent Autonomy
+    - ✅ Transparency in Agent Behavior  
+    - ✅ Ethical Guidelines Integration
+    - ✅ Human Values Validation
+    - ✅ Privacy Protection
+    - ✅ Secure Interactions
+    
+  version: 1.0.0
+  contact:
+    name: Ricardo Amaral (Brevvi) - Silverbullet Research
+    email: team@silverbullet.live
+    url: https://silverbullet.live
+  license:
+    name: Proprietary
+    url: https://voidguard.ai/license
+  termsOfService: https://voidguard.ai/terms
+
+servers:
+  - url: https://api.voidguard.ai/v1
+    description: Production server
+  - url: https://staging-api.voidguard.ai/v1
+    description: Staging server
+  - url: http://localhost:3000/api/v1
+    description: Development server
+
+# Security schemes
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT token for API authentication
+    
+    apiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+      description: API key for service-to-service authentication
+
+  # Reusable response schemas
+  responses:
+    Success:
+      description: Operation successful
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: true
+              timestamp:
+                type: string
+                format: date-time
+              message:
+                type: string
+              data:
+                type: object
+              voidguard:
+                $ref: '#/components/schemas/VoidGuardMetadata'
+
+    BadRequest:
+      description: Bad request - validation error
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              timestamp:
+                type: string
+                format: date-time
+              error:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Validation failed
+                  code:
+                    type: integer
+                    example: 400
+                  details:
+                    type: object
+              voidguard:
+                $ref: '#/components/schemas/VoidGuardMetadata'
+
+    Unauthorized:
+      description: Authentication required
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              timestamp:
+                type: string
+                format: date-time
+              error:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Authentication required
+                  code:
+                    type: integer
+                    example: 401
+              voidguard:
+                $ref: '#/components/schemas/VoidGuardMetadata'
+
+    Forbidden:
+      description: Insufficient permissions
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Insufficient permissions
+                  code:
+                    type: integer
+                    example: 403
+
+    RateLimit:
+      description: Rate limit exceeded
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Rate limit exceeded
+                  code:
+                    type: integer
+                    example: 429
+
+    InternalError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+                example: false
+              error:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Internal server error
+                  code:
+                    type: integer
+                    example: 500
+
+  # Reusable schemas
+  schemas:
+    VoidGuardMetadata:
+      type: object
+      description: VoidGuard AI Safety Framework metadata
+      properties:
+        version:
+          type: string
+          example: "1.0.0"
+        framework:
+          type: string
+          example: "VoidGuard AI Governance Suite"
+        safetyCompliant:
+          type: boolean
+          example: true
+        complianceScore:
+          type: number
+          format: float
+          minimum: 0
+          maximum: 1
+          example: 0.98
+
+    OracleAnalysisResponse:
+      type: object
+      description: Oracle Strategic Intelligence analysis result
+      properties:
+        sessionId:
+          type: string
+          format: uuid
+        timestamp:
+          type: string
+          format: date-time
+        query:
+          type: string
+        strategicIntelligence:
+          type: object
+          properties:
+            consciousness:
+              type: object
+              properties:
+                voidScore:
+                  type: number
+                  format: float
+                  minimum: 0
+                  maximum: 1
+                emergencePattern:
+                  type: string
+                  enum: [transcendent, immanent]
+                consciousnessCoefficient:
+                  type: number
+                  format: float
+                transcendenceLevel:
+                  type: string
+                  enum: [minimal, moderate, high]
+            patterns:
+              type: object
+              properties:
+                turbulenceCoefficient:
+                  type: number
+                  format: float
+                patterns:
+                  type: array
+                  items:
+                    type: string
+                stability:
+                  type: string
+                  enum: [stable, turbulent]
+                complexity:
+                  type: integer
+            visualization:
+              type: object
+              properties:
+                type:
+                  type: string
+                data:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      x:
+                        type: number
+                      y:
+                        type: number
+                metadata:
+                  type: object
+            overallAssessment:
+              type: object
+              properties:
+                score:
+                  type: number
+                  format: float
+                  minimum: 0
+                  maximum: 1
+                recommendation:
+                  type: string
+                confidence:
+                  type: number
+                  format: float
+                riskLevel:
+                  type: string
+                  enum: [low, medium, high]
+        metadata:
+          type: object
+          properties:
+            processingTime:
+              type: integer
+              description: Processing time in milliseconds
+            engines:
+              type: array
+              items:
+                type: string
+            version:
+              type: string
+
+    SafetyValidationResponse:
+      type: object
+      description: VoidGuard safety validation result
+      properties:
+        validationId:
+          type: string
+          format: uuid
+        timestamp:
+          type: string
+          format: date-time
+        systemId:
+          type: string
+        safetyStatus:
+          type: string
+          enum: [compliant, non-compliant]
+        complianceScore:
+          type: number
+          format: float
+          minimum: 0
+          maximum: 1
+        safetyChecks:
+          type: object
+          properties:
+            ethicalGuidelines:
+              $ref: '#/components/schemas/SafetyCheck'
+            dataPrivacy:
+              $ref: '#/components/schemas/SafetyCheck'
+            bias:
+              $ref: '#/components/schemas/SafetyCheck'
+            transparency:
+              $ref: '#/components/schemas/SafetyCheck'
+            humanControl:
+              $ref: '#/components/schemas/SafetyCheck'
+            robustness:
+              $ref: '#/components/schemas/SafetyCheck'
+            accountability:
+              $ref: '#/components/schemas/SafetyCheck'
+        riskAssessment:
+          type: object
+          properties:
+            level:
+              type: string
+              enum: [low, medium, high]
+            criticalFailures:
+              type: integer
+            warnings:
+              type: integer
+            summary:
+              type: string
+        recommendations:
+          type: array
+          items:
+            type: object
+            properties:
+              priority:
+                type: string
+                enum: [low, medium, high]
+              category:
+                type: string
+              issue:
+                type: string
+              action:
+                type: string
+
+    SafetyCheck:
+      type: object
+      properties:
+        score:
+          type: number
+          format: float
+          minimum: 0
+          maximum: 1
+        status:
+          type: string
+          enum: [pass, warning, fail]
+        checks:
+          type: array
+          items:
+            type: object
+            properties:
+              type:
+                type: string
+                enum: [info, warning, error]
+              message:
+                type: string
+
+    AISystem:
+      type: object
+      description: AI system definition for safety validation
+      required:
+        - id
+        - name
+        - type
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        type:
+          type: string
+          enum: [ml_model, llm, computer_vision, nlp, robotics, decision_support]
+        description:
+          type: string
+        version:
+          type: string
+        ethicalBoundaries:
+          type: array
+          items:
+            type: string
+        harmPrevention:
+          type: boolean
+        valuesAlignment:
+          type: boolean
+        encryption:
+          type: object
+          properties:
+            enabled:
+              type: boolean
+            type:
+              type: string
+        dataMinimization:
+          type: boolean
+        consentManagement:
+          type: boolean
+        biasTesting:
+          type: object
+          properties:
+            conducted:
+              type: boolean
+            date:
+              type: string
+              format: date
+            results:
+              type: object
+        fairnessMetrics:
+          type: array
+          items:
+            type: string
+        datasetDiversity:
+          type: boolean
+        explainability:
+          type: object
+          properties:
+            enabled:
+              type: boolean
+            methods:
+              type: array
+              items:
+                type: string
+        decisionLogging:
+          type: boolean
+        modelDocumentation:
+          type: boolean
+        humanOversight:
+          type: object
+          properties:
+            enabled:
+              type: boolean
+            level:
+              type: string
+              enum: [minimal, moderate, comprehensive]
+        manualOverride:
+          type: boolean
+        escalationProcedures:
+          type: boolean
+        adversarialTesting:
+          type: object
+          properties:
+            conducted:
+              type: boolean
+            date:
+              type: string
+              format: date
+        errorHandling:
+          type: boolean
+        performanceMonitoring:
+          type: boolean
+        responsibilityMatrix:
+          type: boolean
+        auditTrail:
+          type: object
+          properties:
+            enabled:
+              type: boolean
+            retention:
+              type: integer
+        incidentResponse:
+          type: boolean
+
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        email:
+          type: string
+          format: email
+        name:
+          type: string
+        role:
+          type: string
+          enum: [user, enterprise_user, admin, super_admin]
+        organizationId:
+          type: string
+          format: uuid
+        permissions:
+          type: array
+          items:
+            type: string
+        createdAt:
+          type: string
+          format: date-time
+        lastLogin:
+          type: string
+          format: date-time
+
+    Organization:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        domain:
+          type: string
+        plan:
+          type: string
+          enum: [starter, professional, enterprise]
+        settings:
+          type: object
+        createdAt:
+          type: string
+          format: date-time
+
+    PaginationMeta:
+      type: object
+      properties:
+        page:
+          type: integer
+          minimum: 1
+        limit:
+          type: integer
+          minimum: 1
+          maximum: 100
+        total:
+          type: integer
+        pages:
+          type: integer
+        hasNext:
+          type: boolean
+        hasPrev:
+          type: boolean
+
+# Global security requirement
+security:
+  - bearerAuth: []
+
+tags:
+  - name: Authentication
+    description: User authentication and authorization
+  - name: Oracle Strategic Intelligence
+    description: AI consciousness analysis and strategic intelligence
+  - name: VoidGuard Safety
+    description: AI safety validation and compliance monitoring
+  - name: Alo Voice Suite
+    description: Enterprise voice assistant and communication management
+  - name: Algorithm Transparency
+    description: AI system auditing and transparency analysis
+  - name: Admin
+    description: Administrative operations and system management
+
+paths:
+  # Health check endpoint (no auth required)
+  /health:
+    get:
+      tags: [System]
+      summary: System health check
+      description: Check the health status of all services
+      security: []
+      responses:
+        '200':
+          description: System is healthy
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [healthy, degraded, unhealthy]
+                  timestamp:
+                    type: string
+                    format: date-time
+                  services:
+                    type: object
+                    properties:
+                      oracle:
+                        type: string
+                      voidguard:
+                        type: string
+                      voice:
+                        type: string
+                      transparency:
+                        type: string
+                      database:
+                        type: string
+                      redis:
+                        type: string
+                  version:
+                    type: string
+                  uptime:
+                    type: number
+                  voidguard:
+                    $ref: '#/components/schemas/VoidGuardMetadata'
+        '503':
+          description: Service unavailable
+
+  # Authentication endpoints
+  /auth/login:
+    post:
+      tags: [Authentication]
+      summary: User login
+      description: Authenticate user and return JWT token
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                  format: password
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      token:
+                        type: string
+                      refreshToken:
+                        type: string
+                      user:
+                        $ref: '#/components/schemas/User'
+                      expiresIn:
+                        type: integer
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /auth/refresh:
+    post:
+      tags: [Authentication]
+      summary: Refresh JWT token
+      description: Generate new access token using refresh token
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - refreshToken
+              properties:
+                refreshToken:
+                  type: string
+      responses:
+        '200':
+          description: Token refreshed successfully
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  # Oracle Strategic Intelligence endpoints
+  /oracle/analyze:
+    post:
+      tags: [Oracle Strategic Intelligence]
+      summary: Analyze strategic intelligence query
+      description: Process a strategic query using Value-Void Axiom and Algorithm Microscope engines
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - query
+              properties:
+                query:
+                  type: string
+                  minLength: 5
+                  maxLength: 1000
+                  example: "How does artificial consciousness emerge in autonomous systems?"
+                options:
+                  type: object
+                  properties:
+                    includeVisualization:
+                      type: boolean
+                      default: true
+                    analysisDepth:
+                      type: string
+                      enum: [shallow, standard, deep]
+                      default: standard
+      responses:
+        '200':
+          description: Analysis completed successfully
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/responses/Success'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/OracleAnalysisResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '429':
+          $ref: '#/components/responses/RateLimit'
+
+  /oracle/health:
+    get:
+      tags: [Oracle Strategic Intelligence]
+      summary: Oracle service health
+      description: Check Oracle engines health status
+      security: []
+      responses:
+        '200':
+          description: Oracle health status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  engines:
+                    type: object
+                    properties:
+                      axiom:
+                        type: string
+                      microscope:
+                        type: string
+                      aquarium:
+                        type: string
+                  version:
+                    type: string
+
+  # VoidGuard Safety endpoints
+  /dashboard/validate-ai-system:
+    post:
+      tags: [VoidGuard Safety]
+      summary: Validate AI system safety
+      description: Comprehensive safety and compliance validation for AI systems
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - aiSystem
+              properties:
+                aiSystem:
+                  $ref: '#/components/schemas/AISystem'
+                options:
+                  type: object
+                  properties:
+                    regulatory:
+                      type: array
+                      items:
+                        type: string
+                        enum: [GDPR, CCPA, SOC2, ISO27001, NIST]
+      responses:
+        '200':
+          description: Validation completed
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/responses/Success'
+                  - type: object
+                    properties:
+                      data:
+                        $ref: '#/components/schemas/SafetyValidationResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /dashboard/compliance-overview:
+    get:
+      tags: [VoidGuard Safety]
+      summary: Get compliance dashboard overview
+      description: Retrieve organization-wide compliance metrics and trends
+      parameters:
+        - name: startDate
+          in: query
+          schema:
+            type: string
+            format: date
+        - name: endDate
+          in: query
+          schema:
+            type: string
+            format: date
+      responses:
+        '200':
+          description: Compliance overview retrieved
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+# Additional paths would be defined here for:
+# - Voice Suite endpoints (/voice/*)
+# - Algorithm Transparency endpoints (/transparency/*)
+# - Admin endpoints (/admin/*)
