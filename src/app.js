@@ -29,6 +29,7 @@ const { voidguardSecurity } = require('./middleware/auth');
 
 // Import routes
 const oracleRoutes = require('./routes/oracleRoutes');
+const authRoutes = require('./routes/authRoutes');
 
 // Import documentation
 const { setupSwagger } = require('../docs/swagger.config');
@@ -207,13 +208,13 @@ app.get('/health', (req, res) => {
 setupSwagger(app);
 
 // API routes
+app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/oracle', oracleRoutes);
 
 // TODO: Add other route modules
 // app.use('/api/v1/dashboard', dashboardRoutes);
 // app.use('/api/v1/voice', voiceRoutes);
 // app.use('/api/v1/transparency', transparencyRoutes);
-// app.use('/api/v1/auth', authRoutes);
 // app.use('/api/v1/admin', adminRoutes);
 
 // Root endpoint

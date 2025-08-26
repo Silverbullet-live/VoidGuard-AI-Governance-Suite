@@ -301,10 +301,15 @@ const requestIdMiddleware = (req, res, next) => {
 const responseTimeMiddleware = (req, res, next) => {
     const startTime = Date.now();
     
-    res.on('finish', () => {
-        const responseTime = Date.now() - startTime;
-        res.setHeader('X-Response-Time', `${responseTime}ms`);
-    });
+    // Override res.end to set response time before finishing
+    const originalEnd = res.end;
+    res.end = function(...args) {
+        if (!res.headersSent) {
+            const responseTime = Date.now() - startTime;
+            res.setHeader('X-Response-Time', `${responseTime}ms`);
+        }
+        originalEnd.apply(this, args);
+    };
     
     next();
 };
